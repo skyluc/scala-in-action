@@ -17,5 +17,23 @@
 class Generation(val aliveCells: Set[Cell] = Set.empty) {
 
   def next: Generation =
-    new Generation()
+    new Generation(stayingAlive ++ born)
+
+  def stayingAlive =
+    aliveCells filter canStayAlive
+
+  def born =
+    aliveCells flatMap deadNeighbours filter canBeBorn
+
+  def canStayAlive(cell: Cell) =
+    Set(2, 3) contains aliveNeighbours(cell).size
+
+  def canBeBorn(cell: Cell) =
+    aliveNeighbours(cell).size == 3
+
+  def aliveNeighbours(cell: Cell) =
+    cell.neighbours intersect aliveCells
+
+  def deadNeighbours(cell: Cell) =
+    cell.neighbours diff aliveCells
 }
